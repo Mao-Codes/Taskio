@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ project.title }} · Taskio{% endblock %}
+{% block content %}
+<a href="{% url 'portal:dashboard' %}" class="small">&larr; Back to portal</a>
+<div class="d-flex justify-content-between align-items-center mt-2 mb-1">
+  <h2 class="mb-0">{{ project.title }}</h2>
+  <span class="pill pill-status-{{ project.status }}">{{ project.get_status_display }}</span>
+</div>
+<p class="text-muted">{{ project.description }}</p>
+
+<div class="progress taskio-progress mb-1">
+  <div class="progress-bar" style="width: {{ project.progress }}%"></div>
+</div>
+<small>{{ project.progress }}% complete</small>
+
+<div class="card mt-4">
+  <div class="card-header">Tasks</div>
+  <ul class="list-group list-group-flush">
+    {% for t in tasks %}
+    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>
+        <div class="fw-semibold">{{ t.title }}</div>
+        <small class="text-muted">Due: {{ t.due_date|default:"-" }} · {{ t.get_status_display }}</small>
+      </div>
+      <div>
+        <a href="{% url 'workspace:task_thread' t.pk %}" class="btn btn-sm btn-light">💬 {{ t.comments.count }}</a>
+        {% if t.status == "review" %}
+        <form method="post" action="{% url 'portal:task_review' t.pk 'approve' %}" class="d-inline">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-primary">Approve</button>
+        </form>
+        <form method="post" action="{% url 'portal:task_review' t.pk 'changes' %}" class="d-inline">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-cta">Request changes</button>
+        </form>
+        {% elif t.status == "done" %}
+        <span class="pill pill-status-active">Approved</span>
+        {% endif %}
+      </div>
+    </li>
+    {% empty %}
+    <li class="list-group-item text-muted">No tasks yet.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

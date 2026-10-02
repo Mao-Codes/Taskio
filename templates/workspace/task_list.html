@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Tasks · Taskio{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">Tasks</h2>
+  <a href="{% url 'workspace:task_add' %}" class="btn btn-cta">+ Add Task</a>
+</div>
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-taskio mb-0">
+      <thead><tr><th>Task</th><th>Project</th><th>Priority</th><th>Status</th><th>Due</th><th></th></tr></thead>
+      <tbody>
+        {% for t in tasks %}
+        <tr>
+          <td class="fw-semibold">{{ t.title }}</td>
+          <td>{{ t.project.title }}<br><small class="text-muted">{{ t.project.client.name }}</small></td>
+          <td><span class="pill pill-{{ t.priority }}">{{ t.get_priority_display }}</span></td>
+          <td>{{ t.get_status_display }}</td>
+          <td class="{% if t.is_overdue %}text-overdue{% endif %}">{{ t.due_date|default:"-" }}</td>
+          <td class="text-end">
+            {% if t.status != "done" %}
+            <form method="post" action="{% url 'workspace:task_complete' t.pk %}" class="d-inline">
+              {% csrf_token %}
+              <button class="btn btn-sm btn-cta">Done</button>
+            </form>
+            {% endif %}
+            <a href="{% url 'workspace:task_edit' t.pk %}" class="btn btn-sm btn-primary">Edit</a>             <a href="{% url 'workspace:task_thread' t.pk %}" class="btn btn-sm btn-light">💬 {{ t.comments.count }}</a>
+            <a href="{% url 'workspace:task_delete' t.pk %}" class="btn btn-sm btn-light">Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-muted">No tasks yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

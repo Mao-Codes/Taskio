@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Invoices · Taskio{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">Invoices</h2>
+  <a href="{% url 'workspace:invoice_add' %}" class="btn btn-cta">+ Create Invoice</a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6">
+    <div class="stat-card stat-orange">
+      <div class="stat-label">Outstanding</div>
+      <div class="stat-number">₦{{ outstanding|floatformat:"2g" }}</div>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="stat-card stat-teal">
+      <div class="stat-label">Paid</div>
+      <div class="stat-number">₦{{ earned|floatformat:"2g" }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-taskio mb-0">
+      <thead><tr><th>Invoice</th><th>Project</th><th>Amount</th><th>Due</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        {% for i in invoices %}
+        <tr>
+          <td class="fw-semibold">{{ i.number }}<br><small class="text-muted">{{ i.description }}</small></td>
+          <td>{{ i.project.title }}<br><small class="text-muted">{{ i.project.client.name }}</small></td>
+          <td>₦{{ i.amount|floatformat:"2g" }}</td>
+          <td class="{% if i.is_overdue %}text-overdue{% endif %}">{{ i.due_date|default:"-" }}</td>
+          <td><span class="pill pill-{{ i.status }}">{{ i.get_status_display }}</span></td>
+          <td class="text-end">
+            <form method="post" action="{% url 'workspace:invoice_toggle' i.pk %}" class="d-inline">
+              {% csrf_token %}
+              <button class="btn btn-sm btn-cta">{% if i.status == "paid" %}Mark unpaid{% else %}Mark paid{% endif %}</button>
+            </form>
+            <a href="{% url 'workspace:invoice_edit' i.pk %}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="{% url 'workspace:invoice_delete' i.pk %}" class="btn btn-sm btn-light">Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-muted">No invoices yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ task.title }} · Taskio{% endblock %}
+{% block content %}
+{% if user.is_freelancer %}
+  <a href="{% url 'workspace:task_list' %}" class="small">&larr; Back to tasks</a>
+{% else %}
+  <a href="{% url 'portal:project_detail' task.project.pk %}" class="small">&larr; Back to project</a>
+{% endif %}
+
+<div class="d-flex justify-content-between align-items-start mt-2 mb-3 flex-wrap gap-2">
+  <div>
+    <h2 class="mb-1">{{ task.title }}</h2>
+    <small class="text-muted">{{ task.project.title }} · {{ task.project.client.name }}</small>
+  </div>
+  <div>
+    <span class="pill pill-{{ task.priority }}">{{ task.get_priority_display }}</span>
+    <span class="pill pill-status-active">{{ task.get_status_display }}</span>
+  </div>
+</div>
+
+{% if task.description %}
+<div class="card mb-3"><div class="card-body">{{ task.description|linebreaks }}</div></div>
+{% endif %}
+
+<div class="card">
+  <div class="card-header">Conversation</div>
+  <div class="card-body">
+    {% for c in comments %}
+    <div class="chat-row {% if c.author == user %}chat-mine{% endif %}">
+      <div class="chat-bubble {% if c.author == user %}bubble-mine{% else %}bubble-theirs{% endif %}">
+        <div class="chat-meta">{{ c.author.username }} · {{ c.created_at|date:"d M, H:i" }}</div>
+        {{ c.body|linebreaksbr }}
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-muted mb-0">No messages yet. Start the conversation below.</p>
+    {% endfor %}
+  </div>
+  <div class="card-footer bg-white border-0 pb-3">
+    <form method="post">
+      {% csrf_token %}
+      <textarea name="body" rows="2" class="form-control" placeholder="Write a message..." required></textarea>
+      <button class="btn btn-primary mt-2">Send</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Taskio · Manage clients and tasks in one place{% endblock %}
+{% block content %}
+
+<!-- HERO -->
+<section class="hero mb-5">
+  <div class="blob blob-pink"></div>
+  <div class="blob blob-orange"></div>
+  <div class="row align-items-center position-relative">
+    <div class="col-lg-7">
+      <span class="hero-tag">For freelancers and their clients</span>
+      <h1 class="hero-title mt-3">Run your freelance work without the chaos.</h1>
+      <p class="hero-sub">
+        Track clients, projects and deadlines in one colourful workspace, and give
+        every client a simple portal to follow progress and approve finished work.
+      </p>
+      <div class="d-flex flex-wrap gap-2 mt-4">
+        <a href="{% url 'signup' %}" class="btn btn-cta btn-lg">Get started free</a>
+        <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">Log in</a>
+      </div>
+    </div>
+    <div class="col-lg-5 mt-5 mt-lg-0">
+      <div class="preview-card">
+        <div class="d-flex justify-content-between mb-3">
+          <strong>Website Redesign</strong>
+          <span class="pill pill-status-active">Active</span>
+        </div>
+        <small>Progress</small>
+        <div class="progress taskio-progress mb-3"><div class="progress-bar" style="width: 72%"></div></div>
+        <div class="preview-row"><span>Design homepage</span><span class="pill pill-low">Done</span></div>
+        <div class="preview-row"><span>Build contact page</span><span class="pill pill-medium">In progress</span></div>
+        <div class="preview-row"><span>Final review</span><span class="pill pill-high">Awaiting approval</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="mb-5">
+  <div class="text-center mb-4">
+    <h2 class="section-title">Everything you need, nothing you don't</h2>
+    <p class="text-muted">Built for solo freelancers and the clients they work with.</p>
+  </div>
+  <div class="row g-3">
+    <div class="col-md-6 col-lg-3">
+      <div class="card h-100 feature-card">
+        <div class="card-body">
+          <div class="feature-icon fi-grape">👥</div>
+          <h5>Client management</h5>
+          <p class="text-muted mb-0">Keep every client's details and projects in one organised place.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card h-100 feature-card">
+        <div class="card-body">
+          <div class="feature-icon fi-teal">✅</div>
+          <h5>Task tracking</h5>
+          <p class="text-muted mb-0">Set priorities and due dates, and see what is overdue at a glance.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card h-100 feature-card">
+        <div class="card-body">
+          <div class="feature-icon fi-pink">📊</div>
+          <h5>Live dashboard</h5>
+          <p class="text-muted mb-0">Stats and progress bars show where every project stands.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card h-100 feature-card">
+        <div class="card-body">
+          <div class="feature-icon fi-orange">🤝</div>
+          <h5>Client portal</h5>
+          <p class="text-muted mb-0">Clients follow progress and approve work without endless emails.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="mb-5">
+  <div class="text-center mb-4">
+    <h2 class="section-title">How it works</h2>
+  </div>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h5>Create your account</h5>
+        <p class="text-muted mb-0">Sign up as a freelancer, or as a client if you were invited.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="step">
+        <div class="step-number">2</div>
+        <h5>Add clients and projects</h5>
+        <p class="text-muted mb-0">Break each project into tasks with priorities and deadlines.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="step">
+        <div class="step-number">3</div>
+        <h5>Deliver and get approval</h5>
+        <p class="text-muted mb-0">Send tasks for review and let clients approve with one click.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band text-center mb-4">
+  <h2>Ready to get organised?</h2>
+  <p class="mb-4">Join Taskio and manage your freelance work in one place.</p>
+  <a href="{% url 'signup' %}" class="btn btn-cta btn-lg">Create your free account</a>
+</section>
+
+<footer class="text-center text-muted small py-3">
+  &copy; Taskio. Built for freelancers.
+</footer>
+
+{% endblock %}

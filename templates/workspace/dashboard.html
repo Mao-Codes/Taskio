@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Taskio{% endblock %}
+{% block content %}
+<h2 class="mb-1">Hello, {{ user.first_name|default:user.username }} 👋</h2>
+<p class="text-muted mb-4">Here's what's happening across your work.</p>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="stat-card stat-grape">
+      <div class="stat-label">Clients</div>
+      <div class="stat-number">{{ client_count }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card stat-teal">
+      <div class="stat-label">Active Projects</div>
+      <div class="stat-number">{{ active_projects }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card stat-pink">
+      <div class="stat-label">Due This Week</div>
+      <div class="stat-number">{{ due_this_week }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card stat-orange">
+      <div class="stat-label">Overdue</div>
+      <div class="stat-number">{{ overdue }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header">Tasks by Status</div>
+      <div class="card-body">
+        <div class="chart-box"><canvas id="statusChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header">Invoices: Paid vs Outstanding (₦)</div>
+      <div class="card-body">
+        <div class="chart-box"><canvas id="moneyChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="card h-100">
+      <div class="card-header">Upcoming Tasks</div>
+      <ul class="list-group list-group-flush">
+        {% for task in upcoming_tasks %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fw-semibold">{{ task.title }}</div>
+            <small class="text-muted">{{ task.project.client.name }} · {{ task.project.title }}</small>
+          </div>
+          <div class="text-end">
+            <span class="pill pill-{{ task.priority }}">{{ task.get_priority_display }}</span>
+            <div class="small {% if task.is_overdue %}text-overdue{% else %}text-muted{% endif %}">
+              {{ task.due_date|default:"No date" }}
+            </div>
+          </div>
+        </li>
+        {% empty %}
+        <li class="list-group-item text-muted">No open tasks yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card h-100">
+      <div class="card-header">Active Projects</div>
+      <div class="card-body">
+        {% for p in projects %}
+        <div class="mb-3">
+          <div class="d-flex justify-content-between">
+            <span class="fw-semibold">{{ p.title }}</span>
+            <small>{{ p.progress }}%</small>
+          </div>
+          <small class="text-muted">{{ p.client.name }}</small>
+          <div class="progress taskio-progress mt-1">
+            <div class="progress-bar" style="width: {{ p.progress }}%"></div>
+          </div>
+        </div>
+        {% empty %}
+        <p class="text-muted mb-0">No active projects yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{ status_labels|json_script:"status-labels" }}
+{{ status_counts|json_script:"status-counts" }}
+{{ paid_total|json_script:"paid-total" }}
+{{ unpaid_total|json_script:"unpaid-total" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+  const labels = JSON.parse(document.getElementById("status-labels").textContent);
+  const counts = JSON.parse(document.getElementById("status-counts").textContent);
+  const paid = JSON.parse(document.getElementById("paid-total").textContent);
+  const unpaid = JSON.parse(document.getElementById("unpaid-total").textContent);
+
+  new Chart(document.getElementById("statusChart"), {
+    type: "doughnut",
+    data: {
+      labels: labels,
+      datasets: [{
+        data: counts,
+        backgroundColor: ["#ff91af", "#ec7d10", "#934683", "#9abca7"],
+        borderWidth: 2,
+        borderColor: "#ffffff"
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: { legend: { position: "bottom" } }
+    }
+  });
+
+  new Chart(document.getElementById("moneyChart"), {
+    type: "bar",
+    data: {
+      labels: ["Paid", "Outstanding"],
+      datasets: [{
+        data: [paid, unpaid],
+        backgroundColor: ["#9abca7", "#ec7d10"],
+        borderRadius: 10
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+{% endblock %}

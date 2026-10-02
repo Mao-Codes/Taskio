@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Invoices · Taskio{% endblock %}
+{% block content %}
+<h2 class="mb-1">Your Invoices</h2>
+<p class="text-muted">Amount still to pay: <strong>₦{{ outstanding|floatformat:"2g" }}</strong></p>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-taskio mb-0">
+      <thead><tr><th>Invoice</th><th>Project</th><th>Amount</th><th>Due</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for i in invoices %}
+        <tr>
+          <td class="fw-semibold">{{ i.number }}<br><small class="text-muted">{{ i.description }}</small></td>
+          <td>{{ i.project.title }}</td>
+          <td>₦{{ i.amount|floatformat:"2g" }}</td>
+          <td class="{% if i.is_overdue %}text-overdue{% endif %}">{{ i.due_date|default:"-" }}</td>
+          <td><span class="pill pill-{{ i.status }}">{{ i.get_status_display }}</span></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="text-muted">No invoices yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
