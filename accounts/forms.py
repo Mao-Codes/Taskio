@@ -8,6 +8,7 @@ class StyledMixin:
         for name, field in self.fields.items():
             css = "form-select" if name == "role" else "form-control"
             field.widget.attrs["class"] = css
+            field.help_text = ""
 
 
 class SignUpForm(StyledMixin, UserCreationForm):
