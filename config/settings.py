@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = [
     "https://*.elasticbeanstalk.com",
     "http://*.elasticbeanstalk.com",
+    "https://*.pythonanywhere.com",
 ]
 
 # Application definition
